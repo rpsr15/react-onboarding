@@ -25,14 +25,14 @@ namespace react_onboarding.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> Getcustomers()
         {
-            return await _context.customers.ToListAsync();
+            return await _context.customer.ToListAsync();
         }
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
-            var customer = await _context.customers.FindAsync(id);
+            var customer = await _context.customer.FindAsync(id);
 
             if (customer == null)
             {
@@ -80,7 +80,7 @@ namespace react_onboarding.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
-            _context.customers.Add(customer);
+            _context.customer.Add(customer);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
@@ -90,13 +90,13 @@ namespace react_onboarding.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Customer>> DeleteCustomer(int id)
         {
-            var customer = await _context.customers.FindAsync(id);
+            var customer = await _context.customer.FindAsync(id);
             if (customer == null)
             {
                 return NotFound();
             }
 
-            _context.customers.Remove(customer);
+            _context.customer.Remove(customer);
             await _context.SaveChangesAsync();
 
             return customer;
@@ -104,7 +104,7 @@ namespace react_onboarding.Controllers
 
         private bool CustomerExists(int id)
         {
-            return _context.customers.Any(e => e.Id == id);
+            return _context.customer.Any(e => e.Id == id);
         }
     }
 }

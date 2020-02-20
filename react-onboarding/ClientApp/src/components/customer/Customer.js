@@ -1,6 +1,5 @@
 ﻿import React, { Component } from 'react';
 
-
 export class Customer extends Component {
 
     constructor(props) {
