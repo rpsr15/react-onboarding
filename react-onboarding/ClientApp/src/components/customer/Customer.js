@@ -2,7 +2,7 @@
 import { Button } from 'semantic-ui-react'
 import DetailsTable from '../DetailsTable';
 import axios from 'axios';
-import ModalBasicExample from "./Modal";
+import { CreateUserModal } from "./Modal";
 
 
 
@@ -26,15 +26,23 @@ export class Customer extends Component {
             );
     }
     handleDelete() {
-        console.log(`mil gay i`)
-        this.setState({open:true})
+        
 
+    }
+    onClose = () => {
+        //Reload data in details
+        console.log("on close");
+        const getCustomersURL = "/api/Customers"
+        axios.get(getCustomersURL).then(result => {
+            this.setState({ loading: false, customers: result.data });
+        }
+        );
     }
     render() {
         const columnNames = ['Name', 'Address']
         return (
             <div>
-                <ModalBasicExample  />
+                <CreateUserModal onClose={this.onClose} />
 
                 
                 {this.state.loading ? "loading..." : <DetailsTable customers={this.state.customers} />}
