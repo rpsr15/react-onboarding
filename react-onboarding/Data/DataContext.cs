@@ -21,6 +21,6 @@ namespace react_onboarding.Data
 
         public DbSet<Customer> customer { get; set; }
 
-        public DbSet<Product> Product { get; set; }
+        public DbSet<Product> product { get; set; }
     }
 }

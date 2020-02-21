@@ -3,7 +3,7 @@ import { Button, Header, Icon, Modal, Form } from 'semantic-ui-react';
 import axios from 'axios';
 
 
-class CreateProductModal extends Component {
+class CreateUserModal extends Component {
     state = { modalOpen: false, name: null, address: null }
 
     handleOpen = () => this.setState({ modalOpen: true })
@@ -38,7 +38,7 @@ class CreateProductModal extends Component {
     render() {
 
         return (
-            <Modal trigger={<Button onClick={this.handleOpen} content='New Product' primary />} centred={true}
+            <Modal trigger={<Button onClick={this.handleOpen} content='New Customer' primary />} centred={true}
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >
@@ -70,7 +70,7 @@ class CreateProductModal extends Component {
 }
 
 
-class EditProductModal extends Component {
+class EditUserModal extends Component {
     state = { modalOpen: false, name: null, address: null }
 
     handleOpen = () => this.setState({ modalOpen: true })
@@ -140,4 +140,4 @@ class EditProductModal extends Component {
     }
 }
 
-export { CreateProductModal, EditProductModal }
+export { CreateUserModal, EditUserModal }

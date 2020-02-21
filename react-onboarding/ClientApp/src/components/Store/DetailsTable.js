@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React, { Component } from 'react'
 import { Table, Button, Icon, Confirm } from 'semantic-ui-react'
 import axios from 'axios';
-import { EditProductModal, CreateProductModal } from "./Modal";
+import { CreateUserModal, EditUserModal } from "./Modal";
 
 export default class DetailsTable extends Component {
     constructor(props) {
@@ -126,7 +126,7 @@ export default class DetailsTable extends Component {
                                 <Table.Cell>{name}</Table.Cell>
                                 <Table.Cell>{price}</Table.Cell>
                                 <Table.Cell>
-                                    <EditProductModal id={id} onClose={() => this.updateCustomers()} />
+                                    <EditUserModal id={id} onClose={() => this.updateCustomers()} />
                                 </Table.Cell>
                                 <Table.Cell>
                                     <Button color='red' onClick={() => this.handleDelete(id)} ><i aria-hidden="true" className="delete icon"></i>Delete</Button>

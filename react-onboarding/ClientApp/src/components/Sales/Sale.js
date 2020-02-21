@@ -2,17 +2,17 @@
 import { Button, Confirm } from 'semantic-ui-react'
 import DetailsTable from './DetailsTable';
 import axios from 'axios';
-import { CreateProductModal } from "./Modal";
+import { CreateUserModal } from "./Modal";
 
 
 
-export class Product extends Component {
+export class Sale extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             open: false,
-            products: [],
+            customers: [],
             loading: true
         }
     }
@@ -44,7 +44,7 @@ export class Product extends Component {
             <div>
 
 
-                <CreateProductModal onClose={this.onClose} />
+                <CreateUserModal onClose={this.onClose} />
 
 
                 {this.state.loading ? "loading..." : <DetailsTable customers={this.state.customers} />}
