@@ -1,21 +1,36 @@
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #0366d6;
 }
 
 code {
-  color: #E01A76;
+    color: #E01A76;
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.confirmModal {
+    height: 20% !important
 }
 
 .ui.modal {
     position: relative;
-    height: 60%;
+    height: 50%;
     width: 50%
 }
 
+
+
+footer {
+    padding-left: 1rem;
+    height: 7rem;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 0 1rem lightgray;
+}

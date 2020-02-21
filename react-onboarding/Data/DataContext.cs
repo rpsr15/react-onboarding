@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using react_onboarding.Models;
 using System;
 using System.Collections.Generic;
@@ -16,9 +16,11 @@ namespace react_onboarding.Data
 
         public DataContext()
         {
-            
+
         }
 
         public DbSet<Customer> customer { get; set; }
+
+        public DbSet<Product> Product { get; set; }
     }
 }

@@ -6,7 +6,7 @@ import { CreateUserModal } from "./Modal";
 
 
 
-export class Customer extends Component {
+export class Product extends Component {
 
     constructor(props) {
         super(props);
@@ -39,7 +39,7 @@ export class Customer extends Component {
         );
     }
     render() {
-        const columnNames = ['Name', 'Address']
+        const columnNames = ['Name', 'Price']
         return (
             <div>
 
