@@ -1,9 +1,9 @@
 ﻿import React, { Component } from 'react';
-import { Button, Header, Icon, Modal, Form } from 'semantic-ui-react';
+import { Button, Icon, Modal, Form } from 'semantic-ui-react';
 import axios from 'axios';
 
 
-class CreateUserModal extends Component {
+class CreateStoreModal extends Component {
     state = { modalOpen: false, name: null, address: null }
 
     handleOpen = () => this.setState({ modalOpen: true })
@@ -11,7 +11,7 @@ class CreateUserModal extends Component {
     handleClose = () => this.setState({ modalOpen: false })
     handleCreate = () => {
         if (this.state.name != '' || this.state.name != null) {
-            axios.post('/api/Customers', {
+            axios.post('/api/Store', {
                 name: this.state.name,
                 address: this.state.address
             })
@@ -38,11 +38,11 @@ class CreateUserModal extends Component {
     render() {
 
         return (
-            <Modal trigger={<Button onClick={this.handleOpen} content='New Customer' primary />} centred={true}
+            <Modal trigger={<Button onClick={this.handleOpen} content='New Store' primary />} centred={true}
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >
-                <Modal.Header>Create Customer</Modal.Header>
+                <Modal.Header>Create Store</Modal.Header>
                 <Modal.Content>
                     <Form>
                         <Form.Field>
@@ -70,8 +70,16 @@ class CreateUserModal extends Component {
 }
 
 
-class EditUserModal extends Component {
-    state = { modalOpen: false, name: null, address: null }
+class EditStoreModal extends Component {
+    state = { modalOpen: false }
+    constructor(props) {
+
+        super(props)
+        console.log(props)
+        this.state.name = props.name
+        this.state.address = props.address
+    }
+
 
     handleOpen = () => this.setState({ modalOpen: true })
 
@@ -80,7 +88,7 @@ class EditUserModal extends Component {
         if (this.state.name != null && this.state.name != '') {
             //send put request
             const id = this.props.id
-            axios.put('/api/Customers/' + id, {
+            axios.put('/api/Store/' + id, {
                 id: id,
                 name: this.state.name,
                 address: this.state.address
@@ -113,16 +121,16 @@ class EditUserModal extends Component {
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >
-                <Modal.Header>Edit Customer</Modal.Header>
+                <Modal.Header>Edit Store</Modal.Header>
                 <Modal.Content>
                     <Form>
                         <Form.Field>
                             <label>Name</label>
-                            <input placeholder='Name' onChange={this.handleNameChange} />
+                            <input defaultValue={this.state.name} onChange={this.handleNameChange} />
                         </Form.Field>
                         <Form.Field>
                             <label>Address</label>
-                            <input placeholder='Address' onChange={this.handleAddressChange} />
+                            <input defaultValue={this.state.address} onChange={this.handleAddressChange} />
                         </Form.Field>
                     </Form>
                 </Modal.Content>
@@ -140,4 +148,4 @@ class EditUserModal extends Component {
     }
 }
 
-export { CreateUserModal, EditUserModal }
+export { CreateStoreModal, EditStoreModal }

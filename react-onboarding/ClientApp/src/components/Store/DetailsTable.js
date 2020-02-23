@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React, { Component } from 'react'
 import { Table, Button, Icon, Confirm } from 'semantic-ui-react'
 import axios from 'axios';
-import { CreateUserModal, EditUserModal } from "./Modal";
+import { EditStoreModal, CreateStoreModal } from "./Modal";
 
 export default class DetailsTable extends Component {
     constructor(props) {
@@ -12,23 +12,23 @@ export default class DetailsTable extends Component {
         open: false,
         column: null,
         direction: null,
-        customers: this.props.customers,
+        stores: this.props.stores,
         selectedId: null
     }
 
 
     componentWillReceiveProps({ someProp }) {
         console.log("receie prop");
-        this.updateCustomers();
+        this.updateStores();
     }
 
     handleSort = (clickedColumn) => () => {
-        const { column, customers, direction } = this.state
+        const { column, stores, direction } = this.state
 
         if (column !== clickedColumn) {
             this.setState({
                 column: clickedColumn,
-                customers: _.sortBy(customers, [clickedColumn]),
+                stores: _.sortBy(stores, [clickedColumn]),
                 direction: 'ascending',
             })
 
@@ -36,7 +36,7 @@ export default class DetailsTable extends Component {
         }
 
         this.setState({
-            customers: customers.reverse(),
+            stores: stores.reverse(),
             direction: direction === 'ascending' ? 'descending' : 'ascending',
         })
     }
@@ -58,14 +58,14 @@ export default class DetailsTable extends Component {
         this.setState({
             open: false
         })
-        const URL = "api/Customers/" + this.state.selectedId;
+        const URL = "api/Store/" + this.state.selectedId;
         console.log(URL);
-        axios.delete(URL).then((res) => this.updateCustomers())
+        axios.delete(URL).then((res) => this.updateStores())
     }
 
     handleEdit(id) {
-        const URL = "api/Customers/" + id;
-        axios.put(URL).then((res) => this.updateCustomers());
+        const URL = "api/Store/" + id;
+        axios.put(URL).then((res) => this.updateStores());
     }
 
     close = () => {
@@ -77,10 +77,10 @@ export default class DetailsTable extends Component {
 
 
 
-    updateCustomers = () => {
-        const getCustomersURL = "/api/Customers"
-        axios.get(getCustomersURL).then(result => {
-            this.setState({ customers: result.data });
+    updateStores = () => {
+        const url = "/api/Store"
+        axios.get(url).then(result => {
+            this.setState({ stores: result.data });
         }
         );
     }
@@ -105,8 +105,8 @@ export default class DetailsTable extends Component {
                                 Name
             </Table.HeaderCell>
                             <Table.HeaderCell
-                                sorted={column === 'price' ? direction : null}
-                                onClick={this.handleSort('price')}
+                                sorted={column === 'address' ? direction : null}
+                                onClick={this.handleSort('address')}
                             >
                                 Price
             </Table.HeaderCell>
@@ -121,12 +121,12 @@ export default class DetailsTable extends Component {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {_.map(this.state.customers, ({ id, name, price }) => (
+                        {_.map(this.state.stores, ({ id, name, address }) => (
                             <Table.Row key={id}>
                                 <Table.Cell>{name}</Table.Cell>
-                                <Table.Cell>{price}</Table.Cell>
+                                <Table.Cell>{address}</Table.Cell>
                                 <Table.Cell>
-                                    <EditUserModal id={id} onClose={() => this.updateCustomers()} />
+                                    <EditStoreModal id={id} name={name} address={address} onClose={() => this.updateStores()} />
                                 </Table.Cell>
                                 <Table.Cell>
                                     <Button color='red' onClick={() => this.handleDelete(id)} ><i aria-hidden="true" className="delete icon"></i>Delete</Button>
