@@ -19,9 +19,10 @@ export class Product extends Component {
 
 
     componentDidMount() {
-        const getCustomersURL = "/api/Customers"
-        axios.get(getCustomersURL).then(result => {
-            this.setState({ loading: false, customers: result.data });
+        const getProductURL = "/api/Products"
+        axios.get(getProductURL).then(result => {
+            console.log("got products", result.data);
+            this.setState({ loading: false, products: result.data });
         }
         );
     }
@@ -30,11 +31,9 @@ export class Product extends Component {
 
     }
     onClose = () => {
-        //Reload data in details
-        console.log("on close");
-        const getCustomersURL = "/api/Customers"
-        axios.get(getCustomersURL).then(result => {
-            this.setState({ loading: false, customers: result.data });
+        const getProductURL = "/api/Products"
+        axios.get(getProductURL).then(result => {
+            this.setState({ loading: false, products: result.data });
         }
         );
     }
@@ -47,7 +46,7 @@ export class Product extends Component {
                 <CreateProductModal onClose={this.onClose} />
 
 
-                {this.state.loading ? "loading..." : <DetailsTable customers={this.state.customers} />}
+                {this.state.loading ? "loading..." : <DetailsTable products={this.state.products} />}
             </div>
         );
     }

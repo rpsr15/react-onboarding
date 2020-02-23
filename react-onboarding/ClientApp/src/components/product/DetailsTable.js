@@ -12,23 +12,22 @@ export default class DetailsTable extends Component {
         open: false,
         column: null,
         direction: null,
-        customers: this.props.customers,
+        products: this.props.products,
         selectedId: null
     }
 
 
     componentWillReceiveProps({ someProp }) {
-        console.log("receie prop");
-        this.updateCustomers();
+        this.updateProducts();
     }
 
     handleSort = (clickedColumn) => () => {
-        const { column, customers, direction } = this.state
+        const { column, products, direction } = this.state
 
         if (column !== clickedColumn) {
             this.setState({
                 column: clickedColumn,
-                customers: _.sortBy(customers, [clickedColumn]),
+                products: _.sortBy(products, [clickedColumn]),
                 direction: 'ascending',
             })
 
@@ -36,13 +35,12 @@ export default class DetailsTable extends Component {
         }
 
         this.setState({
-            customers: customers.reverse(),
+            products: products.reverse(),
             direction: direction === 'ascending' ? 'descending' : 'ascending',
         })
     }
 
     handleDelete(id) {
-        console.log("handling delete", id)
         this.setState({
             selectedId: id,
             open: true
@@ -58,14 +56,14 @@ export default class DetailsTable extends Component {
         this.setState({
             open: false
         })
-        const URL = "api/Customers/" + this.state.selectedId;
+        const URL = "api/Products/" + this.state.selectedId;
         console.log(URL);
-        axios.delete(URL).then((res) => this.updateCustomers())
+        axios.delete(URL).then((res) => this.updateProducts())
     }
 
     handleEdit(id) {
-        const URL = "api/Customers/" + id;
-        axios.put(URL).then((res) => this.updateCustomers());
+        const URL = "api/Products/" + id;
+        axios.put(URL).then((res) => this.updateProducts());
     }
 
     close = () => {
@@ -77,10 +75,10 @@ export default class DetailsTable extends Component {
 
 
 
-    updateCustomers = () => {
-        const getCustomersURL = "/api/Customers"
-        axios.get(getCustomersURL).then(result => {
-            this.setState({ customers: result.data });
+    updateProducts = () => {
+        const getURL = "/api/Products"
+        axios.get(getURL).then(result => {
+            this.setState({ products: result.data });
         }
         );
     }
@@ -121,12 +119,12 @@ export default class DetailsTable extends Component {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {_.map(this.state.customers, ({ id, name, price }) => (
+                        {_.map(this.state.products, ({ id, name, price }) => (
                             <Table.Row key={id}>
                                 <Table.Cell>{name}</Table.Cell>
                                 <Table.Cell>{price}</Table.Cell>
                                 <Table.Cell>
-                                    <EditProductModal id={id} onClose={() => this.updateCustomers()} />
+                                    <EditProductModal id={id} name={name} price={price} onClose={() => this.updateProducts()} />
                                 </Table.Cell>
                                 <Table.Cell>
                                     <Button color='red' onClick={() => this.handleDelete(id)} ><i aria-hidden="true" className="delete icon"></i>Delete</Button>

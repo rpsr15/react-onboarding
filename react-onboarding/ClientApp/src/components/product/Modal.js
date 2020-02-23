@@ -4,16 +4,17 @@ import axios from 'axios';
 
 
 class CreateProductModal extends Component {
-    state = { modalOpen: false, name: null, address: null }
+
+    state = { modalOpen: false, name: null, price: null }
 
     handleOpen = () => this.setState({ modalOpen: true })
 
     handleClose = () => this.setState({ modalOpen: false })
     handleCreate = () => {
         if (this.state.name != '' || this.state.name != null) {
-            axios.post('/api/Customers', {
+            axios.post('/api/Products', {
                 name: this.state.name,
-                address: this.state.address
+                price: parseFloat(this.state.price)
             })
                 .then((response) => {
                     this.closeModal()
@@ -30,8 +31,8 @@ class CreateProductModal extends Component {
     handleNameChange = (e) => {
         this.setState({ name: e.target.value })
     }
-    handleAddressChange = (e) => {
-        this.setState({ address: e.target.value })
+    handlePriceChange = (e) => {
+        this.setState({ price: e.target.value })
     }
 
 
@@ -42,7 +43,7 @@ class CreateProductModal extends Component {
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >
-                <Modal.Header>Create Customer</Modal.Header>
+                <Modal.Header>Create Product</Modal.Header>
                 <Modal.Content>
                     <Form>
                         <Form.Field>
@@ -50,8 +51,8 @@ class CreateProductModal extends Component {
                             <input placeholder='Name' onChange={this.handleNameChange} />
                         </Form.Field>
                         <Form.Field>
-                            <label>Address</label>
-                            <input placeholder='Address' onChange={this.handleAddressChange} />
+                            <label>Price</label>
+                            <input placeholder='Price' onChange={this.handlePriceChange} />
                         </Form.Field>
                     </Form>
                 </Modal.Content>
@@ -71,19 +72,27 @@ class CreateProductModal extends Component {
 
 
 class EditProductModal extends Component {
-    state = { modalOpen: false, name: null, address: null }
+    state = { modalOpen: false }
+    constructor(props) {
+
+        super(props)
+        console.log(props)
+        this.state.name = props.name
+        this.state.price = props.price
+    }
 
     handleOpen = () => this.setState({ modalOpen: true })
 
     handleClose = () => this.setState({ modalOpen: false })
     handleEdit = () => {
+        console.log("here", this.state.name, this.state.price)
         if (this.state.name != null && this.state.name != '') {
             //send put request
             const id = this.props.id
-            axios.put('/api/Customers/' + id, {
+            axios.put('/api/Products/' + id, {
                 id: id,
                 name: this.state.name,
-                address: this.state.address
+                price: parseFloat(this.state.price)
             })
                 .then((response) => {
                     console.log(response);
@@ -101,8 +110,8 @@ class EditProductModal extends Component {
     handleNameChange = (e) => {
         this.setState({ name: e.target.value })
     }
-    handleAddressChange = (e) => {
-        this.setState({ address: e.target.value })
+    handlePriceChange = (e) => {
+        this.setState({ price: e.target.value })
     }
 
 
@@ -118,11 +127,11 @@ class EditProductModal extends Component {
                     <Form>
                         <Form.Field>
                             <label>Name</label>
-                            <input placeholder='Name' onChange={this.handleNameChange} />
+                            <input placeholder={this.props.name} defaultValue={this.props.name} onChange={this.handleNameChange} />
                         </Form.Field>
                         <Form.Field>
-                            <label>Address</label>
-                            <input placeholder='Address' onChange={this.handleAddressChange} />
+                            <label>Price</label>
+                            <input defaultValue={this.props.price} onChange={this.handlePriceChange} />
                         </Form.Field>
                     </Form>
                 </Modal.Content>
