@@ -2,7 +2,7 @@
 import { Button, Confirm } from 'semantic-ui-react'
 import DetailsTable from './DetailsTable';
 import axios from 'axios';
-import { CreateUserModal } from "./Modal";
+import { CreateSaleModal } from "./Modal";
 
 
 
@@ -12,16 +12,17 @@ export class Sale extends Component {
         super(props);
         this.state = {
             open: false,
-            customers: [],
+            sales: [],
             loading: true
         }
     }
 
 
     componentDidMount() {
-        const getCustomersURL = "/api/Customers"
-        axios.get(getCustomersURL).then(result => {
-            this.setState({ loading: false, customers: result.data });
+        const url = "/api/SaleData"
+        axios.get(url).then(result => {
+            console.log(result.data);
+            this.setState({ loading: false, sales: result.data });
         }
         );
     }
@@ -30,24 +31,22 @@ export class Sale extends Component {
 
     }
     onClose = () => {
-        //Reload data in details
-        console.log("on close");
-        const getCustomersURL = "/api/Customers"
-        axios.get(getCustomersURL).then(result => {
-            this.setState({ loading: false, customers: result.data });
+        const url = "/api/SaleData"
+        axios.get(url).then(result => {
+            this.setState({ loading: false, sales: result.data });
         }
         );
     }
     render() {
-        const columnNames = ['Name', 'Price']
+
         return (
             <div>
 
 
-                <CreateUserModal onClose={this.onClose} />
+                <CreateSaleModal onClose={this.onClose} />
 
 
-                {this.state.loading ? "loading..." : <DetailsTable customers={this.state.customers} />}
+                {this.state.loading ? "loading..." : <DetailsTable sales={this.state.sales} />}
             </div>
         );
     }

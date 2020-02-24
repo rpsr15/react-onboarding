@@ -14,7 +14,7 @@ export class Layout extends Component {
                 <Container>
                     {this.props.children}
                 </Container>
-                <Footer title={"Ravi Rathore"} />
+                <Footer title={"Ravi Singh Rathore"} />
             </div>
         );
     }

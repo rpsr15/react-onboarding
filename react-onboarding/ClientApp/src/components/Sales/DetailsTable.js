@@ -2,33 +2,37 @@ import _ from 'lodash'
 import React, { Component } from 'react'
 import { Table, Button, Icon, Confirm } from 'semantic-ui-react'
 import axios from 'axios';
-import { CreateUserModal, EditUserModal } from "./Modal";
+import { CreateSaleModal, EditSaleModal } from "./Modal";
 
 export default class DetailsTable extends Component {
     constructor(props) {
         super(props);
+        this.state.sales = this.props.sales
+
     }
+
+
     state = {
         open: false,
         column: null,
         direction: null,
-        customers: this.props.customers,
+        sales: this.props.sale,
         selectedId: null
     }
 
 
     componentWillReceiveProps({ someProp }) {
         console.log("receie prop");
-        this.updateCustomers();
+        this.updateSales();
     }
 
     handleSort = (clickedColumn) => () => {
-        const { column, customers, direction } = this.state
+        const { column, sales, direction } = this.state
 
         if (column !== clickedColumn) {
             this.setState({
                 column: clickedColumn,
-                customers: _.sortBy(customers, [clickedColumn]),
+                sales: _.sortBy(sales, [clickedColumn]),
                 direction: 'ascending',
             })
 
@@ -36,7 +40,7 @@ export default class DetailsTable extends Component {
         }
 
         this.setState({
-            customers: customers.reverse(),
+            sales: sales.reverse(),
             direction: direction === 'ascending' ? 'descending' : 'ascending',
         })
     }
@@ -53,19 +57,19 @@ export default class DetailsTable extends Component {
 
     }
 
-    //close delte confirmation modal
+
     confirmDelete = () => {
         this.setState({
             open: false
         })
-        const URL = "api/Customers/" + this.state.selectedId;
+        const URL = "api/SaleData/" + this.state.selectedId;
         console.log(URL);
-        axios.delete(URL).then((res) => this.updateCustomers())
+        axios.delete(URL).then((res) => this.updateSales())
     }
 
     handleEdit(id) {
-        const URL = "api/Customers/" + id;
-        axios.put(URL).then((res) => this.updateCustomers());
+        const URL = "api/SaleData/" + id;
+        axios.put(URL).then((res) => this.updateSales());
     }
 
     close = () => {
@@ -77,15 +81,16 @@ export default class DetailsTable extends Component {
 
 
 
-    updateCustomers = () => {
-        const getCustomersURL = "/api/Customers"
-        axios.get(getCustomersURL).then(result => {
-            this.setState({ customers: result.data });
+    updateSales = () => {
+        const url = "/api/SaleData"
+        axios.get(url).then(result => {
+            this.setState({ sales: result.data });
         }
         );
     }
 
     render() {
+        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
         const { column, direction } = this.state
         return (
@@ -99,16 +104,24 @@ export default class DetailsTable extends Component {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell
-                                sorted={column === 'name' ? direction : null}
-                                onClick={this.handleSort('name')}
+                                sorted={column === 'customerId' ? direction : null}
+                                onClick={this.handleSort('customerId')}
                             >
-                                Name
+                                CustomerId
             </Table.HeaderCell>
                             <Table.HeaderCell
                                 sorted={column === 'price' ? direction : null}
                                 onClick={this.handleSort('price')}
                             >
-                                Price
+                                ProductId
+            </Table.HeaderCell>
+                            <Table.HeaderCell
+                            >
+                                StoreId
+            </Table.HeaderCell>
+                            <Table.HeaderCell
+                            >
+                                DateSold
             </Table.HeaderCell>
                             <Table.HeaderCell
                             >
@@ -121,18 +134,24 @@ export default class DetailsTable extends Component {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {_.map(this.state.customers, ({ id, name, price }) => (
-                            <Table.Row key={id}>
-                                <Table.Cell>{name}</Table.Cell>
-                                <Table.Cell>{price}</Table.Cell>
-                                <Table.Cell>
-                                    <EditUserModal id={id} onClose={() => this.updateCustomers()} />
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <Button color='red' onClick={() => this.handleDelete(id)} ><i aria-hidden="true" className="delete icon"></i>Delete</Button>
-                                </Table.Cell>
-                            </Table.Row>
-                        ))}
+                        {console.log("here", this.state.sales)}
+                        {_.map(this.state.sales, ({ id, customerId, productId, storeId, dateSold }) =>
+
+                            (
+                                <Table.Row key={id}>
+                                    <Table.Cell>{customerId}</Table.Cell>
+                                    <Table.Cell>{productId}</Table.Cell>
+                                    <Table.Cell>{storeId}</Table.Cell>
+                                    <Table.Cell>{((new Date(dateSold)).getDate() + " " + months[(new Date(dateSold)).getMonth()] + "," + (new Date(dateSold)).getFullYear())}</Table.Cell>
+                                    <Table.Cell>
+                                        <EditSaleModal id={id} onClose={() => this.updateSales()} />
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <Button color='red' onClick={() => this.handleDelete(id)} ><i aria-hidden="true" className="delete icon"></i>Delete</Button>
+                                    </Table.Cell>
+                                </Table.Row>
+                            )
+                        )}
                     </Table.Body>
                 </Table>
             </div>
