@@ -25,6 +25,6 @@ namespace react_onboarding.Data
 
         public DbSet<Store> store { get; set; }
 
-        public DbSet<Sale> sales { get; set; }
+        public DbSet<Sale> sale { get; set; }
     }
 }

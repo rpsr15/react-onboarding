@@ -1,26 +1,44 @@
 ﻿import React, { Component } from 'react';
-import { Button, Header, Icon, Modal, Form } from 'semantic-ui-react';
+import { Button, Header, Icon, Modal, Form, Dropdown } from 'semantic-ui-react';
 import axios from 'axios';
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 
 
 class CreateSaleModal extends Component {
-    state = { modalOpen: false }
+    state = { modalOpen: false, customers: [], products: [], stores: [] }
+
+     formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 
     handleOpen = () => this.setState({ modalOpen: true })
 
-    handleClose = () => this.setState({ modalOpen: false })
+    handleClose = () => this.setState({ modalOpen: false, selectedCustomer: null, selectedDate: null, selectedProduct: null, selectedStore: null })
     handleCreate = () => {
-        if (this.state.productId != '' || this.state.productId != null) {
-            axios.post('/api/SaleData', {
-                productId: this.state.produtId,
-                customerId: this.state.customerId,
-                storeId: this.state.storeId,
-                dateSold: (new Date()).toLocaleDateString()
 
-            })
-                .then((response) => {
+        if (this.state.selectedCustomer && this.state.selectedProduct && this.state.selectedStore && this.state.selectedDate) {
+            // console.log("handle craete", this.state.selectedCustomer, this.state.selectedDate, this.state.selectedProduct, this.state.selectedStore);
+            console.log(this.state.selected);
+
+            axios.post('/api/Sales', {
+                customerId: this.state.selectedCustomer,
+                productId: this.state.selectedProduct,
+                storeId: this.state.selectedStore,
+                dateSold: this.state.selectedDate
+
+            }).then((response) => {
+                console.log(response);
                     this.closeModal()
                 })
         }
@@ -32,18 +50,26 @@ class CreateSaleModal extends Component {
         this.setState({ modalOpen: false })
     }
 
-    handleNameChange = (e) => {
-        this.setState({ name: e.target.value })
-    }
-    handleAddressChange = (e) => {
-        this.setState({ address: e.target.value })
+    handleCustomerChange = (e, data) => {
+        console.log("customer chage", data.value);
+        this.setState({ selectedCustomer: data.value});
     }
 
-    onDateChange = (e) => {
-        console.log(e.target.value);
-        this.setState({
-            dateSold: e.target.value
-        })
+    handleProductChange = (e, data) => {
+        console.log("product change", data.value);
+        this.setState({ selectedProduct: data.value });
+    }
+    handleStoresChange = (e, data) => {
+        console.log("store change", data.value);
+        this.setState({ selectedStore: data.value });
+    }
+
+    onDateChange = (event, data) => {
+        const date = new Date(data.value)
+        const dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+            .toISOString()
+            .split("T")[0];
+        this.setState({ selectedDate: dateString });
     }
 
 
@@ -53,25 +79,51 @@ class CreateSaleModal extends Component {
         }
 
         return (
-            <Modal style={styleObj} trigger={<Button onClick={this.handleOpen} content='New Sale' primary />} centred={true}
+            <Modal style={{ position: 'relative', height: '35rem' }} trigger={<Button onClick={this.handleOpen} content='New Sale' primary />} centred={true}
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >
-                <Modal.Header>Create Customer</Modal.Header>
+                <Modal.Header>Create Sale</Modal.Header>
                 <Modal.Content>
                     <Form>
                         <Form.Field>
                             <label>Date Sold </label>
-                            <SemanticDatepicker onChange={this.onDateChange} />
+                            <SemanticDatepicker onChange={this.onDateChange} format={"MM/DD/YYYY"} />
                         </Form.Field>
                         <Form.Field>
-                            <label>ProductId</label>
-                            <input placeholder='Customer' onChange={this.handleNameChange} />
+                            <label>Customer</label>
+                            <Dropdown
+                                placeholder='Customer'
+                                fluid
+                                search
+                                selection
+                                options={this.props.customers}
+                                onChange={this.handleCustomerChange}
+                            />
                         </Form.Field>
                         <Form.Field>
-                            <label>CustomerId</label>
-                            <input placeholder='Product' onChange={this.handleAddressChange} />
+                            <label>Product</label>
+                            <Dropdown
+                                placeholder='Product'
+                                fluid
+                                search
+                                selection
+                                options={this.props.products}
+                                onChange={this.handleProductChange}
+                            />
                         </Form.Field>
+                        <Form.Field>
+                            <label>Store</label>
+                            <Dropdown
+                                placeholder='Store'
+                                fluid
+                                search
+                                selection
+                                options={this.props.stores}
+                                onChange={this.handleStoresChange}
+                            />
+                        </Form.Field>
+
 
                     </Form>
                 </Modal.Content>
@@ -91,24 +143,49 @@ class CreateSaleModal extends Component {
 
 
 class EditSaleModal extends Component {
-    state = { modalOpen: false, name: null, address: null }
+    state = { modalOpen: false, customers: [], products: [], stores: [] }
+
+    componentDidMount() {
+        
+    }
+
+    constructor(props) {
+        super(props);
+    }
+
+    formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
 
     handleOpen = () => this.setState({ modalOpen: true })
 
-    handleClose = () => this.setState({ modalOpen: false })
-    handleEdit = () => {
-        if (this.state.name != null && this.state.name != '') {
-            //send put request
-            const id = this.props.id
-            axios.put('/api/Customers/' + id, {
-                id: id,
-                name: this.state.name,
-                address: this.state.address
+    handleClose = () => this.setState({ modalOpen: false, selectedCustomer: null, selectedDate: null, selectedProduct: null, selectedStore: null })
+    handleCreate = () => {
+
+        if (this.state.selectedCustomer && this.state.selectedProduct && this.state.selectedStore && this.state.selectedDate) {
+            // console.log("handle craete", this.state.selectedCustomer, this.state.selectedDate, this.state.selectedProduct, this.state.selectedStore);
+            console.log(this.state.selected);
+
+            axios.post('/api/Sales', {
+                customerId: this.state.selectedCustomer,
+                productId: this.state.selectedProduct,
+                storeId: this.state.selectedStore,
+                dateSold: this.state.selectedDate
+
+            }).then((response) => {
+                console.log(response);
+                this.closeModal()
             })
-                .then((response) => {
-                    console.log(response);
-                    this.closeModal()
-                })
         }
 
     }
@@ -118,40 +195,89 @@ class EditSaleModal extends Component {
         this.setState({ modalOpen: false })
     }
 
-    handleNameChange = (e) => {
-        this.setState({ name: e.target.value })
+    handleCustomerChange = (e, data) => {
+        console.log("customer chage", data.value);
+        this.setState({ selectedCustomer: data.value });
     }
-    handleAddressChange = (e) => {
-        this.setState({ address: e.target.value })
+
+    handleProductChange = (e, data) => {
+        console.log("product change", data.value);
+        this.setState({ selectedProduct: data.value });
+    }
+    handleStoresChange = (e, data) => {
+        console.log("store change", data.value);
+        this.setState({ selectedStore: data.value });
+    }
+
+    onDateChange = (event, data) => {
+        const date = new Date(data.value)
+        const dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+            .toISOString()
+            .split("T")[0];
+        this.setState({ selectedDate: dateString });
     }
 
 
     render() {
+        const styleObj = {
+            height: "200rem !important"
+        }
 
         return (
-            <Modal trigger={<Button color='yellow' onClick={this.handleOpen}> <i aria-hidden="true" className="edit icon"></i>Edit</Button>} centred={true}
+            <Modal style={{ position: 'relative', height: '35rem' }} trigger={<Button color='yellow' onClick={this.handleOpen}> <i aria-hidden="true" className="edit icon"></i>Edit</Button>} centred={true}
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >
-                <Modal.Header>Edit Customer</Modal.Header>
+                <Modal.Header>Edit_ Sale</Modal.Header>
                 <Modal.Content>
                     <Form>
                         <Form.Field>
-                            <label>Name</label>
-                            <input placeholder='Name' onChange={this.handleNameChange} />
+                            <label>Date Sold </label>
+                            <SemanticDatepicker onChange={this.onDateChange} format={"MM/DD/YYYY"} />
                         </Form.Field>
                         <Form.Field>
-                            <label>Address</label>
-                            <input placeholder='Address' onChange={this.handleAddressChange} />
+                            <label>Customer</label>
+                            <Dropdown
+                                placeholder='Customer'
+                                fluid
+                                search
+                                selection
+                                options={this.props.customers}
+                                onChange={this.handleCustomerChange}
+                            />
                         </Form.Field>
+                        <Form.Field>
+                            <label>Product</label>
+                            <Dropdown
+                                placeholder='Product'
+                                fluid
+                                search
+                                selection
+                                options={this.props.products}
+                                onChange={this.handleProductChange}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Store</label>
+                            <Dropdown
+                                placeholder='Store'
+                                fluid
+                                search
+                                selection
+                                options={this.props.stores}
+                                onChange={this.handleStoresChange}
+                            />
+                        </Form.Field>
+
+
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>
                     <Button color='red' onClick={this.handleClose}>
                         <Icon name='remove' /> Cancel
       </Button>
-                    <Button color='green' onClick={this.handleEdit}>
-                        <Icon name='checkmark' /> Edit
+                    <Button color='green' onClick={this.handleCreate}>
+                        <Icon name='checkmark' /> Create
       </Button>
                 </Modal.Actions>
             </Modal >);
@@ -159,5 +285,6 @@ class EditSaleModal extends Component {
 
     }
 }
+
 
 export { CreateSaleModal, EditSaleModal }

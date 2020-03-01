@@ -39,7 +39,7 @@ class CreateProductModal extends Component {
     render() {
 
         return (
-            <Modal trigger={<Button onClick={this.handleOpen} content='New Product' primary />} centred={true}
+            <Modal style={{ position: 'relative', height: '26rem' }} trigger={<Button onClick={this.handleOpen} content='New Product' primary />} centred={true}
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >

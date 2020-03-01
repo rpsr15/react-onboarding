@@ -62,7 +62,7 @@ export default class DetailsTable extends Component {
         this.setState({
             open: false
         })
-        const URL = "api/SaleData/" + this.state.selectedId;
+        const URL = "api/Sales/" + this.state.selectedId;
         console.log(URL);
         axios.delete(URL).then((res) => this.updateSales())
     }
@@ -82,7 +82,7 @@ export default class DetailsTable extends Component {
 
 
     updateSales = () => {
-        const url = "/api/SaleData"
+        const url = "/api/Sales"
         axios.get(url).then(result => {
             this.setState({ sales: result.data });
         }
@@ -134,7 +134,7 @@ export default class DetailsTable extends Component {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {console.log("here", this.state.sales)}
+                        
                         {_.map(this.state.sales, ({ id, customerId, productId, storeId, dateSold }) =>
 
                             (

@@ -38,7 +38,7 @@ class CreateUserModal extends Component {
     render() {
 
         return (
-            <Modal trigger={<Button onClick={this.handleOpen} content='New Customer' primary />} centred={true}
+            <Modal style={{ position: 'relative', height: '26rem' }} trigger={<Button onClick={this.handleOpen} content='New Customer' primary />} centred={true}
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >
