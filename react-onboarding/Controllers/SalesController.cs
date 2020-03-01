@@ -10,6 +10,31 @@ using react_onboarding.Models;
 
 namespace react_onboarding.Controllers
 {
+
+    public class SaleData {
+        public SaleData(int id, int productId, string product, int storeId, string store, int customerId, string customer, DateTime dateSold)
+        {
+            Id = id;
+            ProductId = productId;
+            Product = product;
+            StoreId = storeId;
+            Store = store;
+            CustomerId = customerId;
+            Customer = customer;
+            DateSold = dateSold;
+        }
+
+        public int Id { get; set; }
+        public int ProductId { get; set; }
+        public string Product { get; set; }
+        public int StoreId { get; set; }
+        public string Store { get; set; }
+        public int CustomerId { get; set; }
+        public string Customer { get; set; }
+        public DateTime DateSold { get; set; }
+
+        
+    }
     [Route("api/[controller]")]
     [ApiController]
     public class SalesController : ControllerBase
@@ -31,11 +56,15 @@ namespace react_onboarding.Controllers
         }
 
         [HttpGet("saleData")]
-        public  string Getsaledata()
+        public List<SaleData> Getsaledata()
         {
 
-            return 'sfsd';
-        }
+            var query = _context.sale.Join(_context.customer, sale => sale.CustomerId, customer => customer.Id, (sale, customer) => new { customer = customer.Name, sale = sale.Id, customerId = customer.Id, productId = sale.ProductId, storeId = sale.StoreId, soldDate = sale.DateSold }).
+                Join(_context.product, sale => sale.productId, product => product.Id, (sale, product) => new { sale = sale.sale, customer = sale.customer, customerId = sale.customerId, product = product.Name, productId = product.Id, storeId = sale.storeId, soldDate = sale.soldDate }).
+                Join(_context.store, sale => sale.storeId, store => store.Id, (sale, store) => new SaleData(sale.sale,sale.productId,sale.product,store.Id,store.Name,sale.customerId,sale.customer,sale.soldDate)/* new { sale = sale.sale, customer = sale.customer, customerId = sale.customerId, product = sale.product, productId = sale.productId, storeId = sale.storeId, store = store.Name }*/).ToList();
+            
+            return  query;
+        } 
 
         // GET: api/Sales/5
         [HttpGet("{id}")]

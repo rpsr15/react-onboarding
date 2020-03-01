@@ -19,7 +19,7 @@ export class Sale extends Component {
 
 
     componentDidMount() {
-        const url = "api/Sales"
+        const url = "api/Sales/SaleData"
         axios.get(url).then(result => {
             this.setState({ loading: false, sales: result.data });
              
