@@ -60,7 +60,7 @@ export class Sale extends Component {
 
     }
     onClose = () => {
-        const url = "api/Sales"
+        const url = "api/Sales/SaleData"
         axios.get(url).then(result => {
             this.setState({ loading: false, sales: result.data });
         }
@@ -75,7 +75,7 @@ export class Sale extends Component {
                 <CreateSaleModal onClose={this.onClose} customers={this.state.customers} products={this.state.products} stores={this.state.stores} />
 
 
-                {this.state.loading ? "loading..." : <DetailsTable sales={this.state.sales} />}
+                {this.state.loading ? "loading..." : <DetailsTable sales={this.state.sales} customers={this.state.customers} products={this.state.products} stores={this.state.stores} />}
             </div>
         );
     }

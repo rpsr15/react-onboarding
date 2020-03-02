@@ -7,6 +7,7 @@ import { CreateSaleModal, EditSaleModal } from "./Modal";
 export default class DetailsTable extends Component {
     constructor(props) {
         super(props);
+        console.log("here ravi",this.props.sales);
         this.state.sales = this.props.sales
 
     }
@@ -67,10 +68,10 @@ export default class DetailsTable extends Component {
         axios.delete(URL).then((res) => this.updateSales())
     }
 
-    handleEdit(id) {
-        const URL = "api/SaleData/" + id;
-        axios.put(URL).then((res) => this.updateSales());
-    }
+    //handleEdit(id) {
+    //    const URL = "api/SaleData/" + id;
+    //    axios.put(URL).then((res) => this.updateSales());
+    //}
 
     close = () => {
         this.setState({
@@ -82,7 +83,7 @@ export default class DetailsTable extends Component {
 
 
     updateSales = () => {
-        const url = "/api/Sales"
+        const url = "/api/Sales/SaleData"
         axios.get(url).then(result => {
             this.setState({ sales: result.data });
         }
@@ -104,20 +105,22 @@ export default class DetailsTable extends Component {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell
-                                sorted={column === 'customerId' ? direction : null}
-                                onClick={this.handleSort('customerId')}
+                                sorted={column === 'customer' ? direction : null}
+                                onClick={this.handleSort('customer')}
                             >
-                                CustomerId
+                                Customer
             </Table.HeaderCell>
                             <Table.HeaderCell
-                                sorted={column === 'price' ? direction : null}
-                                onClick={this.handleSort('price')}
+                                sorted={column === 'product' ? direction : null}
+                                onClick={this.handleSort('product')}
                             >
-                                ProductId
+                                Product
             </Table.HeaderCell>
                             <Table.HeaderCell
+                                sorted={column === 'store' ? direction : null}
+                                onClick={this.handleSort('store')}
                             >
-                                StoreId
+                                Store
             </Table.HeaderCell>
                             <Table.HeaderCell
                             >
@@ -135,16 +138,16 @@ export default class DetailsTable extends Component {
                     </Table.Header>
                     <Table.Body>
                         
-                        {_.map(this.state.sales, ({ id, customerId, productId, storeId, dateSold }) =>
+                        {_.map(this.state.sales, ({ id, customer, customerId, product, productId, store, storeId, dateSold }) =>
 
                             (
                                 <Table.Row key={id}>
-                                    <Table.Cell>{customerId}</Table.Cell>
-                                    <Table.Cell>{productId}</Table.Cell>
-                                    <Table.Cell>{storeId}</Table.Cell>
+                                    <Table.Cell>{customer}</Table.Cell>
+                                    <Table.Cell>{product}</Table.Cell>
+                                    <Table.Cell>{store}</Table.Cell>
                                     <Table.Cell>{((new Date(dateSold)).getDate() + " " + months[(new Date(dateSold)).getMonth()] + "," + (new Date(dateSold)).getFullYear())}</Table.Cell>
                                     <Table.Cell>
-                                        <EditSaleModal id={id} onClose={() => this.updateSales()} />
+                                        <EditSaleModal id={id} customer={customer} customerId={customerId} product={product} productId={productId} store={store} storeId={storeId} dateSold={dateSold} customers={this.props.customers} stores={this.props.stores} products={this.props.products} onClose={() => this.updateSales()} />
                                     </Table.Cell>
                                     <Table.Cell>
                                         <Button color='red' onClick={() => this.handleDelete(id)} ><i aria-hidden="true" className="delete icon"></i>Delete</Button>
