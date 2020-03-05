@@ -88,8 +88,11 @@ namespace react_onboarding.Controllers
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Customer>> DeleteCustomer(int id)
+        public async Task<ActionResult<Customer>>? DeleteCustomer(int id)
         {
+
+            //check if customer can be delted
+
             var customer = await _context.customer.FindAsync(id);
             if (customer == null)
             {
@@ -97,10 +100,37 @@ namespace react_onboarding.Controllers
             }
 
             _context.customer.Remove(customer);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+
+                _context.SaveChanges();
+
+            }
+
+            catch (Exception e)
+            {
+                Console.WriteLine("chau happened", e);
+                customer = null;
+            }
 
             return customer;
         }
+        [HttpGet("canDelete/{id}")]
+        public bool canBeDeleted(int id) {
+            var query = _context.customer.Join(
+                _context.sale,
+                customer => customer.Id,
+                sale => sale.CustomerId,
+                (customer, sale) => new { customerId = customer.Id, saleId = sale.CustomerId }
+                ).Where(result => result.customerId == id).ToList();
+            Console.WriteLine(query.Count);
+            if (query.Count > 0) { return false; }
+            else {
+                return true;
+            }
+        }
+            
 
         private bool CustomerExists(int id)
         {

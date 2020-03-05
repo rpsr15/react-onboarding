@@ -102,6 +102,24 @@ namespace react_onboarding.Controllers
             return product;
         }
 
+        [HttpGet("canDelete/{id}")]
+        public bool canBeDeleted(int id)
+        {
+            var query = _context.product.Join(
+                _context.sale,
+                product => product.Id,
+                sale => sale.ProductId,
+                (product, sale) => new { productId = product.Id, saleId = sale.ProductId }
+                ).Where(result => result.productId == id).ToList();
+            Console.WriteLine(query.Count);
+            if (query.Count > 0) { return false; }
+            else
+            {
+                return true;
+            }
+        }
+
+
         private bool ProductExists(int id)
         {
             return _context.product.Any(e => e.Id == id);

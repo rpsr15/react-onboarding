@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { Table, Button, Icon, Confirm } from 'semantic-ui-react'
+import { Table, Button, Icon, Confirm , Modal} from 'semantic-ui-react'
 import axios from 'axios';
 import { EditStoreModal, CreateStoreModal } from "./Modal";
 
@@ -11,6 +11,7 @@ export default class DetailsTable extends Component {
     state = {
         open: false,
         column: null,
+        warningOpen: false,
         direction: null,
         stores: this.props.stores,
         selectedId: null
@@ -42,14 +43,42 @@ export default class DetailsTable extends Component {
     }
 
     handleDelete(id) {
+        //check if can be delted
         console.log("handling delete", id)
+        axios.get("/api/Customers/canDelete/" + id).then(
+            res => {
+                console.log(res.data);
+
+                if (res.data === true) {
+
+
+                    this.setState({
+                        selectedId: id,
+                        open: true
+
+
+                    })
+
+                }
+                else {
+
+                    this.setState({
+                        warningOpen: true
+
+
+                    })
+                }
+            }
+        );
+
+
+    }
+
+    closeWarning = () => {
+        console.log("tryin to close warning");
         this.setState({
-            selectedId: id,
-            open: true
-
-
+            warningOpen: false
         })
-
 
     }
 
@@ -90,6 +119,20 @@ export default class DetailsTable extends Component {
         const { column, direction } = this.state
         return (
             <div>
+                <Modal style={{ height: '15rem' }} size={'mini'} open={this.state.warningOpen} onClose={this.closeWarning}>
+                    <Modal.Header>Cannot Delete!</Modal.Header>
+                    <Modal.Content>
+                        <p>Please check associated sales.</p>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button
+                            icon='checkmark'
+                            labelPosition='right'
+                            content='Ok'
+                            onClick={this.closeWarning}
+                        />
+                    </Modal.Actions>
+                </Modal>
                 <Confirm className="confirmModal"
                     open={this.state.open}
                     onCancel={this.close}

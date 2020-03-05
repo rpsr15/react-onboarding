@@ -38,7 +38,7 @@ class CreateStoreModal extends Component {
     render() {
 
         return (
-            <Modal style={{ position: 'relative', height: '26rem' }} trigger={<Button onClick={this.handleOpen} content='New Store' primary />} centred={true}
+            <Modal style={{ position: 'relative', height: '22rem' }} trigger={<Button onClick={this.handleOpen} content='New Store' primary />} centred={true}
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >
@@ -117,7 +117,7 @@ class EditStoreModal extends Component {
     render() {
 
         return (
-            <Modal trigger={<Button color='yellow' onClick={this.handleOpen}> <i aria-hidden="true" className="edit icon"></i>Edit</Button>} centred={true}
+            <Modal style={{ height: '22rem' }} trigger={<Button color='yellow' onClick={this.handleOpen}> <i aria-hidden="true" className="edit icon"></i>Edit</Button>} centred={true}
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >

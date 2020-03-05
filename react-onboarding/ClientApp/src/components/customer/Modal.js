@@ -38,7 +38,7 @@ class CreateUserModal extends Component {
     render() {
 
         return (
-            <Modal style={{ position: 'relative', height: '26rem' }} trigger={<Button onClick={this.handleOpen} content='New Customer' primary />} centred={true}
+            <Modal style={{ position: 'relative', height: '22rem' }} trigger={<Button onClick={this.handleOpen} content='New Customer' primary />} centred={true}
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >
@@ -71,6 +71,14 @@ class CreateUserModal extends Component {
 
 
 class EditUserModal extends Component {
+
+    constructor(props) {
+
+        super(props)
+        this.state.name = props.name
+        this.state.address = props.address
+    }
+
     state = { modalOpen: false, name: null, address: null }
 
     handleOpen = () => this.setState({ modalOpen: true })
@@ -109,7 +117,7 @@ class EditUserModal extends Component {
     render() {
 
         return (
-            <Modal trigger={<Button color='yellow' onClick={this.handleOpen}> <i aria-hidden="true" className="edit icon"></i>Edit</Button>} centred={true}
+            <Modal style={{ position: 'relative', height: '22rem' }} trigger={<Button color='yellow' onClick={this.handleOpen}> <i aria-hidden="true" className="edit icon"></i>Edit</Button>} centred={true}
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
             >
@@ -118,11 +126,11 @@ class EditUserModal extends Component {
                     <Form>
                         <Form.Field>
                             <label>Name</label>
-                            <input placeholder='Name' onChange={this.handleNameChange} />
+                            <input placeholder={this.props.name} defaultValue={this.props.name}  onChange={this.handleNameChange} />
                         </Form.Field>
                         <Form.Field>
                             <label>Address</label>
-                            <input placeholder='Address' onChange={this.handleAddressChange} />
+                            <input placeholder={this.props.address} defaultValue={this.props.address}  onChange={this.handleAddressChange} />
                         </Form.Field>
                     </Form>
                 </Modal.Content>

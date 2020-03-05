@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { Table, Button, Icon, Confirm } from 'semantic-ui-react'
+import { Table, Button, Icon, Confirm, Modal } from 'semantic-ui-react'
 import axios from 'axios';
 import { EditProductModal, CreateProductModal } from "./Modal";
 
@@ -10,6 +10,7 @@ export default class DetailsTable extends Component {
     }
     state = {
         open: false,
+        warningOpen: false,
         column: null,
         direction: null,
         products: this.props.products,
@@ -40,13 +41,43 @@ export default class DetailsTable extends Component {
         })
     }
 
-    handleDelete(id) {
+    closeWarning = () => {
+        console.log("tryin to close warning");
         this.setState({
-            selectedId: id,
-            open: true
-
-
+            warningOpen: false
         })
+
+    }
+
+
+    handleDelete(id) {
+        //check if can be delted
+        console.log("handling delete", id)
+        axios.get("/api/Products/canDelete/" + id).then(
+            res => {
+                console.log(res.data);
+
+                if (res.data === true) {
+
+
+                    this.setState({
+                        selectedId: id,
+                        open: true
+
+
+                    })
+
+                }
+                else {
+
+                    this.setState({
+                        warningOpen: true
+
+
+                    })
+                }
+            }
+        );
 
 
     }
@@ -93,6 +124,21 @@ export default class DetailsTable extends Component {
                     onCancel={this.close}
                     onConfirm={this.confirmDelete}
                 />
+
+                <Modal style={{ height: '15rem' }} size={'mini'} open={this.state.warningOpen} onClose={this.closeWarning}>
+                    <Modal.Header>Cannot Delete!</Modal.Header>
+                    <Modal.Content>
+                        <p>Please check associated sales.</p>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button
+                            icon='checkmark'
+                            labelPosition='right'
+                            content='Ok'
+                            onClick={this.closeWarning}
+                        />
+                    </Modal.Actions>
+                </Modal>
                 <Table sortable celled striped fixed>
                     <Table.Header>
                         <Table.Row>

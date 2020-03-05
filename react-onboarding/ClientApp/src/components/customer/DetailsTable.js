@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { Table, Button, Icon, Confirm } from 'semantic-ui-react'
+import { Table, Button, Icon, Confirm, Modal } from 'semantic-ui-react'
 import axios from 'axios';
 import { CreateUserModal, EditUserModal } from "./Modal";
 
@@ -10,6 +10,7 @@ export default class DetailsTable extends Component {
     }
     state = {
         open: false,
+        warningOpen: false,
         column: null,
         direction: null,
         customers: this.props.customers,
@@ -42,14 +43,42 @@ export default class DetailsTable extends Component {
     }
 
     handleDelete(id) {
+        //check if can be delted
         console.log("handling delete", id)
+        axios.get("/api/Customers/canDelete/" + id).then(
+            res => {
+                console.log(res.data);
+
+                if (res.data === true) {
+
+
+                    this.setState({
+                        selectedId: id,
+                        open: true
+
+
+                    })
+
+                }
+                else {
+
+                    this.setState({
+                        warningOpen: true
+
+
+                    })
+                }
+            }
+        );
+
+
+    }
+
+    closeWarning = () => {
+        console.log("tryin to close warning");
         this.setState({
-            selectedId: id,
-            open: true
-
-
+            warningOpen: false
         })
-
 
     }
 
@@ -60,7 +89,12 @@ export default class DetailsTable extends Component {
         })
         const URL = "api/Customers/" + this.state.selectedId;
         console.log(URL);
-        axios.delete(URL).then((res) => this.updateCustomers())
+        axios.delete(URL).then((res) => {
+
+            console.log(res.status);
+          
+            this.updateCustomers();
+        })
     }
 
     handleEdit(id) {
@@ -74,6 +108,7 @@ export default class DetailsTable extends Component {
         })
 
     }
+   
 
 
 
@@ -95,6 +130,22 @@ export default class DetailsTable extends Component {
                     onCancel={this.close}
                     onConfirm={this.confirmDelete}
                 />
+
+                <Modal style={{ height: '15rem' }} size={'mini'} open={this.state.warningOpen} onClose={this.closeWarning}>
+                    <Modal.Header>Cannot Delete!</Modal.Header>
+                    <Modal.Content>
+                        <p>Please check associated sales.</p>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button
+                            icon='checkmark'
+                            labelPosition='right'
+                            content='Ok'
+                            onClick={this.closeWarning}
+                        />
+                    </Modal.Actions>
+                </Modal>
+               
                 <Table sortable celled striped fixed>
                     <Table.Header>
                         <Table.Row>
@@ -126,7 +177,7 @@ export default class DetailsTable extends Component {
                                 <Table.Cell>{name}</Table.Cell>
                                 <Table.Cell>{address}</Table.Cell>
                                 <Table.Cell>
-                                    <EditUserModal id={id} onClose={() => this.updateCustomers()} />
+                                    <EditUserModal id={id} name={name} address={address} onClose={() => this.updateCustomers()} />
                                 </Table.Cell>
                                 <Table.Cell>
                                     <Button color='red' onClick={() => this.handleDelete(id)} ><i aria-hidden="true" className="delete icon"></i>Delete</Button>
