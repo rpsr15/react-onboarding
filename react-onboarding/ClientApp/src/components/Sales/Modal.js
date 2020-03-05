@@ -9,8 +9,9 @@ class CreateSaleModal extends Component {
     constructor(props) {
         super(props);
         const date = new Date();
-        const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours());
-        this.state.defaultDate = newDate;
+       // const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours());
+        this.state.defaultDate = date;
+        this.state.selectedDate = date;
     }
     state = { modalOpen: false, customers: [], products: [], stores: [] }
 
@@ -34,14 +35,13 @@ class CreateSaleModal extends Component {
     handleCreate = () => {
 
         if (this.state.selectedCustomer && this.state.selectedProduct && this.state.selectedStore && this.state.selectedDate) {
-            // console.log("handle craete", this.state.selectedCustomer, this.state.selectedDate, this.state.selectedProduct, this.state.selectedStore);
-            console.log(this.state.selected);
-
+            
             axios.post('/api/Sales', {
                 customerId: this.state.selectedCustomer,
                 productId: this.state.selectedProduct,
                 storeId: this.state.selectedStore,
-                dateSold: this.state.selectedDate
+                dateSold: this.formatDate(this.state.selectedDate)
+                //convert to yyyy-mm-dd
 
             }).then((response) => {
                 console.log(response);
@@ -80,6 +80,7 @@ class CreateSaleModal extends Component {
 
     onDateChange = (event, data) => {
         const date = new Date(data.value)
+        console.log("abhi chutiya",date);
         this.setState({ selectedDate: date });
     }
 
@@ -171,8 +172,8 @@ class EditSaleModal extends Component {
         this.state.selectedCustomer = this.props.customerId;
         this.state.selectedProduct = this.props.productId;
         this.state.selectedStore = this.props.storeId;
-        this.state.selectedDate = newDate;
-        this.state.dateSold = newDate;
+        this.state.selectedDate = date;
+        this.state.dateSold = date;
         this.state.customerName = this.props.customer;
         this.state.productName = this.props.product;
         this.state.storeName = this.props.store;
@@ -209,7 +210,7 @@ class EditSaleModal extends Component {
             customerId: this.state.selectedCustomer,
                 productId: this.state.selectedProduct,
             storeId: this.state.selectedStore,
-            dateSold: this.state.selectedDate
+            dateSold: this.formatDate(this.state.selectedDate)
 
             }).then((response) => {
                 console.log(response);
