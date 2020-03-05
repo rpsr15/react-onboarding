@@ -5,6 +5,13 @@ import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 
 class CreateSaleModal extends Component {
+
+    constructor(props) {
+        super(props);
+        const date = new Date();
+        const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours());
+        this.state.defaultDate = newDate;
+    }
     state = { modalOpen: false, customers: [], products: [], stores: [] }
 
      formatDate(date) {
@@ -63,12 +70,17 @@ class CreateSaleModal extends Component {
         this.setState({ selectedStore: data.value });
     }
 
+    //onDateChange = (event, data) => {
+    //    const date = new Date(data.value)
+    //    const dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+    //        .toISOString()
+    //        .split("T")[0];
+    //    this.setState({ selectedDate: dateString });
+    //}
+
     onDateChange = (event, data) => {
         const date = new Date(data.value)
-        const dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
-        this.setState({ selectedDate: dateString });
+        this.setState({ selectedDate: date });
     }
 
 
@@ -87,7 +99,7 @@ class CreateSaleModal extends Component {
                     <Form>
                         <Form.Field>
                             <label>Date Sold </label>
-                            <SemanticDatepicker onChange={this.onDateChange} format={"MM/DD/YYYY"} />
+                            <SemanticDatepicker clearable={false} value={this.state.defaultDate} onChange={this.onDateChange} format={"MM/DD/YYYY"} />
                         </Form.Field>
                         <Form.Field>
                             <label>Customer</label>
@@ -247,7 +259,7 @@ class EditSaleModal extends Component {
                     <Form>
                         <Form.Field>
                             <label>Date Sold </label>
-                            <SemanticDatepicker value={this.state.dateSold} onChange={this.onDateChange} format={"MM/DD/YYYY"} />
+                            <SemanticDatepicker clearable={false} value={this.state.dateSold} onChange={this.onDateChange} format={"MM/DD/YYYY"} />
 
                         </Form.Field>
                         <Form.Field>
